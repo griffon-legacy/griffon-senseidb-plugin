@@ -16,6 +16,7 @@
 
 import griffon.core.GriffonApplication
 import griffon.plugins.sensei.SenseiConnector
+import griffon.plugins.sensei.SenseiEnhancer
 
 /**
  * @author Andres Almiray
@@ -35,7 +36,7 @@ class SenseidbGriffonAddon {
             def types = app.config.griffon?.sensei?.injectInto ?: ['controller']
             if(!types.contains(type)) return
             def mc = app.artifactManager.findGriffonClass(klass).metaClass
-            SenseiConnector.enhance(mc)
+            SenseiEnhancer.enhance(mc)
         }
     ]
 }

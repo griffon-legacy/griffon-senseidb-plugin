@@ -3,17 +3,17 @@ datastore {
 }
 environments {
     development {
-        store {
+        datastore {
             host = 'localhost'
         }
     }
     test {
-        store {
+        datastore {
             host = 'localhost'
         }
     }
     production {
-        store {
+        datastore {
             host = 'localhost'
         }
     }

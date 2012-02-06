@@ -46,7 +46,7 @@ class SenseidbGriffonPlugin {
             email: 'aalmiray@yahoo.com'
         ]
     ]
-    String title = 'Senseidb NoSQL support'
+    String title = 'Senseidb support'
     String description = '''
 The Sensei plugin enables lightweight access to [Senseidb][1] datastores.
 This plugin does NOT provide domain classes nor dynamic finders like GORM does.
@@ -60,7 +60,7 @@ Upon installation the plugin will generate the following artifacts in `$appdir/g
 
 A new dynamic method named `withSensei` will be injected into all controllers,
 giving you access to an `com.senseidb.search.client.json.SenseiServiceProxy` object, with which you'll be able
-to make calls to the datastore. Remember to make all calls to the datastore off the EDT
+to make calls to the datastore. Remember to make all datastore calls off the EDT
 otherwise your application may appear unresponsive when doing long computations
 inside the EDT.
 This method is aware of multiple datastores. If no dsName is specified when calling
@@ -70,7 +70,7 @@ been configured as 'internal'
 
 	package sample
 	class SampleController {
-	    def queryAllDataSources = {
+	    def queryAllDataStores = {
 	        withSensei { dsName, proxy -> ... }
 	        withSensei('internal') { dsName, proxy -> ... }
 	    }
@@ -113,6 +113,43 @@ can be done in this way
 
 This block can be used inside the `environments()` block in the same way as the
 default datastore block is used.
+
+Testing
+-------
+The `withSensei()` dynamic method will not be automatically injected during unit testing, because addons are simply not initialized
+for this kind of tests. However you can use `SenseiEnhancer.enhance(metaClassInstance, senseiProviderInstance)` where 
+`senseiProviderInstance` is of type `griffon.plugins.sensei.SenseiProvider`. The contract for this interface looks like this
+
+    public interface SenseiProvider {
+        Object withSensei(Closure closure);
+        Object withSensei(String storeName, Closure closure);
+        <T> T withSensei(CallableWithArgs<T> callable);
+        <T> T withSensei(String storeName, CallableWithArgs<T> callable);
+    }
+
+It's up to you define how these methods need to be implemented for your tests. For example, here's an implementation that never
+fails regardless of the arguments it receives
+
+    class MySenseiProvider implements SenseiProvider {
+        Object withSensei(String storeName = 'default', Closure closure) {
+            // empty
+        }
+
+        public <T> T withSensei(String storeName = 'default', CallableWithArgs<T> callable) {
+            // empty
+        }       
+    }
+    
+This implementation may be used in the following way
+
+    class MyServiceTests extends GriffonUnitTestCase {
+        void testSmokeAndMirrors() {
+            MyService service = new MyService()
+            SenseiEnhancer.enhance(service.metaClass, new MySenseiProvider())
+            // exercise service methods
+        }
+    }
+
 
 [1]: http://senseidb.com/
 '''

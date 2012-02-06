@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
  * @author Andres Almiray
  */
 @Singleton
-class SenseiStoreHolder {
+class SenseiStoreHolder implements SenseiProvider {
     private static final Logger LOG = LoggerFactory.getLogger(SenseiStoreHolder)
     private static final Object[] LOCK = new Object[0]
     private final Map<String, SenseiServiceProxy> stores = [:]

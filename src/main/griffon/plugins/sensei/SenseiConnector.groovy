@@ -29,25 +29,10 @@ import org.slf4j.LoggerFactory
  * @author Andres Almiray
  */
 @Singleton
-final class SenseiConnector {
+final class SenseiConnector implements SenseiProvider {
     private bootstrap
 
     private static final Logger LOG = LoggerFactory.getLogger(SenseiConnector)
-
-    static void enhance(MetaClass mc) {
-        mc.withSensei = {Closure closure ->
-            SenseiStoreHolder.instance.withSensei('default', closure)
-        }
-        mc.withSensei << {String storeName, Closure closure ->
-            SenseiStoreHolder.instance.withSensei(storeName, closure)
-        }
-        mc.withSensei << {CallableWithArgs callable ->
-            SenseiStoreHolder.instance.withSensei('default', callable)
-        }
-        mc.withSensei << {String storeName, CallableWithArgs callable ->
-            SenseiStoreHolder.instance.withSensei(storeName, callable)
-        }
-    }
 
     Object withSensei(String storeName = 'default', Closure closure) {
         SenseiStoreHolder.instance.withSensei(storeName, closure)
