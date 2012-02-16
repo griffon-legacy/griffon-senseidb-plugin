@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package griffon.plugins.sensei
+package griffon.plugins.senseidb
 
 import com.senseidb.search.client.json.SenseiServiceProxy
 
@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory
  * @author Andres Almiray
  */
 @Singleton
-class SenseiStoreHolder implements SenseiProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(SenseiStoreHolder)
+class SenseidbStoreHolder implements SenseidbProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(SenseidbStoreHolder)
     private static final Object[] LOCK = new Object[0]
     private final Map<String, SenseiServiceProxy> stores = [:]
   
@@ -49,13 +49,13 @@ class SenseiStoreHolder implements SenseiProvider {
         storeStore(storeName, store)       
     }
 
-    Object withSensei(String storeName = 'default', Closure closure) {
+    Object withSenseidb(String storeName = 'default', Closure closure) {
         SenseiServiceProxy store = fetchStore(storeName)
         if(LOG.debugEnabled) LOG.debug("Executing statement on store '$storeName'")
         return closure(storeName, store)
     }
 
-    public <T> T withSensei(String storeName = 'default', CallableWithArgs<T> callable) {
+    public <T> T withSenseidb(String storeName = 'default', CallableWithArgs<T> callable) {
         SenseiServiceProxy store = fetchStore(storeName)
         if(LOG.debugEnabled) LOG.debug("Executing statement on store '$storeName'")
         callable.args = [storeName, store] as Object[]
@@ -77,8 +77,8 @@ class SenseiStoreHolder implements SenseiProvider {
         SenseiServiceProxy store = retrieveStore(storeName)
         if(store == null) {
             GriffonApplication app = ApplicationHolder.application
-            ConfigObject config = SenseiConnector.instance.createConfig(app)
-            store = SenseiConnector.instance.connect(app, config, storeName)
+            ConfigObject config = SenseidbConnector.instance.createConfig(app)
+            store = SenseidbConnector.instance.connect(app, config, storeName)
         }
         
         if(store == null) {

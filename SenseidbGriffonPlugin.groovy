@@ -21,7 +21,7 @@ class SenseidbGriffonPlugin {
     // the plugin version
     String version = '0.1'
     // the version or versions of Griffon the plugin is designed for
-    String griffonVersion = '0.9.5-SNAPSHOT > *'
+    String griffonVersion = '0.9.5 > *'
     // the other plugins this plugin depends on
     Map dependsOn = [:]
     // resources that are included in plugin packaging
@@ -38,7 +38,7 @@ class SenseidbGriffonPlugin {
     // URL where documentation can be found
     String documentation = ''
     // URL where source can be found
-    String source = 'https://github.com/aalmiray/griffon-senseidb-plugin'
+    String source = 'https://github.com/griffon/griffon-senseidb-plugin'
 
     List authors = [
         [
@@ -55,10 +55,10 @@ Usage
 -----
 Upon installation the plugin will generate the following artifacts in `$appdir/griffon-app/conf`:
 
- * SenseiConfig.groovy - contains the datastore definitions.
- * BootstrapSensei.groovy - defines init/destroy hooks for data to be manipulated during app startup/shutdown.
+ * SenseidbConfig.groovy - contains the datastore definitions.
+ * BootstrapdbSenseidb.groovy - defines init/destroy hooks for data to be manipulated during app startup/shutdown.
 
-A new dynamic method named `withSensei` will be injected into all controllers,
+A new dynamic method named `withSenseidb` will be injected into all controllers,
 giving you access to an `com.senseidb.search.client.json.SenseiServiceProxy` object, with which you'll be able
 to make calls to the datastore. Remember to make all datastore calls off the EDT
 otherwise your application may appear unresponsive when doing long computations
@@ -71,20 +71,20 @@ been configured as 'internal'
 	package sample
 	class SampleController {
 	    def queryAllDataStores = {
-	        withSensei { dsName, proxy -> ... }
-	        withSensei('internal') { dsName, proxy -> ... }
+	        withSenseidb { dsName, proxy -> ... }
+	        withSenseidb('internal') { dsName, proxy -> ... }
 	    }
 	}
 	
-This method is also accessible to any component through the singleton `griffon.plugins.sensei.SenseiConnector`.
+This method is also accessible to any component through the singleton `griffon.plugins.senseidb.SenseidbConnector`.
 You can inject these methods to non-artifacts via metaclasses. Simply grab hold of a particular metaclass and call
-`SenseiConnector.enhance(metaClassInstance)`.
+`SenseidbEnhancer.enhance(metaClassInstance, senseidbProviderInstance)`.
 
 Configuration
 -------------
 ### Dynamic method injection
 
-The `withSensei()` dynamic method will be added to controllers by default. You can
+The `withSenseidb()` dynamic method will be added to controllers by default. You can
 change this setting by adding a configuration flag in `griffon-app/conf/Config.groovy`
 
     griffon.sensei.injectInto = ['controller', 'service']
@@ -93,10 +93,10 @@ change this setting by adding a configuration flag in `griffon-app/conf/Config.g
 
 The following events will be triggered by this addon
 
- * SenseiConnectStart[config, dsName] - triggered before connecting to the datastore
- * SenseiConnectEnd[dsName, datastore] - triggered after connecting to the datastore
- * SenseiDisconnectStart[config, dsName, datastore] - triggered before disconnecting from the datastore
- * SenseiDisconnectEnd[config, dsName] - triggered after disconnecting from the datastore
+ * SenseidbConnectStart[config, dsName] - triggered before connecting to the datastore
+ * SenseidbConnectEnd[dsName, datastore] - triggered after connecting to the datastore
+ * SenseidbDisconnectStart[config, dsName, datastore] - triggered before disconnecting from the datastore
+ * SenseidbDisconnectEnd[config, dsName] - triggered after disconnecting from the datastore
 
 ### Multiple Stores
 
@@ -116,28 +116,23 @@ default datastore block is used.
 
 Testing
 -------
-The `withSensei()` dynamic method will not be automatically injected during unit testing, because addons are simply not initialized
+The `withSenseidb()` dynamic method will not be automatically injected during unit testing, because addons are simply not initialized
 for this kind of tests. However you can use `SenseiEnhancer.enhance(metaClassInstance, senseiProviderInstance)` where 
 `senseiProviderInstance` is of type `griffon.plugins.sensei.SenseiProvider`. The contract for this interface looks like this
 
-    public interface SenseiProvider {
-        Object withSensei(Closure closure);
-        Object withSensei(String storeName, Closure closure);
-        <T> T withSensei(CallableWithArgs<T> callable);
-        <T> T withSensei(String storeName, CallableWithArgs<T> callable);
+    public interface SenseidbProvider {
+        Object withSenseidb(Closure closure);
+        Object withSenseidb(String storeName, Closure closure);
+        <T> T withSenseidb(CallableWithArgs<T> callable);
+        <T> T withSenseidb(String storeName, CallableWithArgs<T> callable);
     }
 
 It's up to you define how these methods need to be implemented for your tests. For example, here's an implementation that never
 fails regardless of the arguments it receives
 
-    class MySenseiProvider implements SenseiProvider {
-        Object withSensei(String storeName = 'default', Closure closure) {
-            // empty
-        }
-
-        public <T> T withSensei(String storeName = 'default', CallableWithArgs<T> callable) {
-            // empty
-        }       
+    class MySenseiProvider implements SenseidbProvider {
+        Object withSenseidb(String storeName = 'default', Closure closure) { null }
+        public <T> T withSenseidb(String storeName = 'default', CallableWithArgs<T> callable) { null }       
     }
     
 This implementation may be used in the following way
@@ -145,7 +140,7 @@ This implementation may be used in the following way
     class MyServiceTests extends GriffonUnitTestCase {
         void testSmokeAndMirrors() {
             MyService service = new MyService()
-            SenseiEnhancer.enhance(service.metaClass, new MySenseiProvider())
+            SenseidbEnhancer.enhance(service.metaClass, new MySenseiProvider())
             // exercise service methods
         }
     }

@@ -1,6 +1,6 @@
 import com.senseidb.search.client.json.SenseiServiceProxy
 
-class BootstrapSensei {
+class BootstrapSenseidb {
     def init = { String storeName, SenseiServiceProxy sensei -> 
     }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package griffon.plugins.sensei
+package griffon.plugins.senseidb
 
 import com.senseidb.search.client.json.SenseiServiceProxy
 
@@ -29,23 +29,23 @@ import org.slf4j.LoggerFactory
  * @author Andres Almiray
  */
 @Singleton
-final class SenseiConnector implements SenseiProvider {
+final class SenseidbConnector implements SenseidbProvider {
     private bootstrap
 
-    private static final Logger LOG = LoggerFactory.getLogger(SenseiConnector)
+    private static final Logger LOG = LoggerFactory.getLogger(SenseidbConnector)
 
-    Object withSensei(String storeName = 'default', Closure closure) {
-        SenseiStoreHolder.instance.withSensei(storeName, closure)
+    Object withSenseidb(String storeName = 'default', Closure closure) {
+        SenseidbStoreHolder.instance.withSenseidb(storeName, closure)
     }
 
-    public <T> T withSensei(String storeName = 'default', CallableWithArgs<T> callable) {
-        return SenseiStoreHolder.instance.withSensei(storeName, callable)
+    public <T> T withSenseidb(String storeName = 'default', CallableWithArgs<T> callable) {
+        return SenseidbStoreHolder.instance.withSenseidb(storeName, callable)
     }
 
     // ======================================================
 
     ConfigObject createConfig(GriffonApplication app) {
-        def storeClass = app.class.classLoader.loadClass('SenseiConfig')
+        def storeClass = app.class.classLoader.loadClass('SenseidbConfig')
         new ConfigSlurper(Environment.current.name).parse(storeClass)
     }
 
@@ -54,30 +54,30 @@ final class SenseiConnector implements SenseiProvider {
     }
 
     SenseiServiceProxy connect(GriffonApplication app, ConfigObject config, String storeName = 'default') {
-        if (SenseiStoreHolder.instance.isStoreConnected(storeName)) {
-            return SenseiStoreHolder.instance.getStore(storeName)
+        if (SenseidbStoreHolder.instance.isStoreConnected(storeName)) {
+            return SenseidbStoreHolder.instance.getStore(storeName)
         }
 
         config = narrowConfig(config, storeName)
-        app.event('SenseiConnectStart', [config, storeName])
+        app.event('SenseidbConnectStart', [config, storeName])
         SenseiServiceProxy store = startSensei(config)
-        SenseiStoreHolder.instance.setStore(storeName, store)
-        bootstrap = app.class.classLoader.loadClass('BootstrapSensei').newInstance()
+        SenseidbStoreHolder.instance.setStore(storeName, store)
+        bootstrap = app.class.classLoader.loadClass('BootstrapSenseidb').newInstance()
         bootstrap.metaClass.app = app
         bootstrap.init(storeName, store)
-        app.event('SenseiConnectEnd', [storeName, store])
+        app.event('SenseidbConnectEnd', [storeName, store])
         store
     }
 
     void disconnect(GriffonApplication app, ConfigObject config, String storeName = 'default') {
-        if (SenseiStoreHolder.instance.isStoreConnected(storeName)) {
+        if (SenseidbStoreHolder.instance.isStoreConnected(storeName)) {
             config = narrowConfig(config, storeName)
-            SenseiServiceProxy store = SenseiStoreHolder.instance.getStore(storeName)
-            app.event('SenseiDisconnectStart', [config, storeName, store])
+            SenseiServiceProxy store = SenseidbStoreHolder.instance.getStore(storeName)
+            app.event('SenseidbDisconnectStart', [config, storeName, store])
             bootstrap.destroy(storeName, store)
             stopSensei(config, store)
-            app.event('SenseiDisconnectEnd', [config, storeName])
-            SenseiStoreHolder.instance.disconnectStore(storeName)
+            app.event('SenseidbDisconnectEnd', [config, storeName])
+            SenseidbStoreHolder.instance.disconnectStore(storeName)
         }
     }
 

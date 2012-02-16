@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package griffon.plugins.sensei
+package griffon.plugins.senseidb
 
 import griffon.util.CallableWithArgs
 
 /**
  * @author Andres Almiray
  */
-final class SenseiEnhancer {
-    private SenseiEnhancer() {}
+final class SenseidbEnhancer {
+    private SenseidbEnhancer() {}
     
-    static void enhance(MetaClass mc, SenseiProvider provider = SenseiServerHolder.instance) {
-        mc.withSensei = {Closure closure ->
-            provider.withSensei('default', closure)
+    static void enhance(MetaClass mc, SenseidbProvider provider = SenseidbStoreHolder.instance) {
+        mc.withSenseidb = {Closure closure ->
+            provider.withSenseidb('default', closure)
         }
-        mc.withSensei << {String storeName, Closure closure ->
-            provider.withSensei(storeName, closure)
+        mc.withSenseidb << {String storeName, Closure closure ->
+            provider.withSenseidb(storeName, closure)
         }
-        mc.withSensei << {CallableWithArgs callable ->
-            provider.withSensei('default', callable)
+        mc.withSenseidb << {CallableWithArgs callable ->
+            provider.withSenseidb('default', callable)
         }
-        mc.withSensei << {String storeName, CallableWithArgs callable ->
-            provider.withSensei(storeName, callable)
+        mc.withSenseidb << {String storeName, CallableWithArgs callable ->
+            provider.withSenseidb(storeName, callable)
         }
     }
 }

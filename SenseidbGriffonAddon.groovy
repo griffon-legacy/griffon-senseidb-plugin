@@ -15,28 +15,28 @@
  */
 
 import griffon.core.GriffonApplication
-import griffon.plugins.sensei.SenseiConnector
-import griffon.plugins.sensei.SenseiEnhancer
+import griffon.plugins.senseidb.SenseidbConnector
+import griffon.plugins.senseidb.SenseidbEnhancer
 
 /**
  * @author Andres Almiray
  */
 class SenseidbGriffonAddon {
     void addonInit(GriffonApplication app) {
-        ConfigObject config = SenseiConnector.instance.createConfig(app)
-        SenseiConnector.instance.connect(app, config)
+        ConfigObject config = SenseidbConnector.instance.createConfig(app)
+        SenseidbConnector.instance.connect(app, config)
     }
 
     def events = [
         ShutdownStart: { app ->
-            ConfigObject config = SenseiConnector.instance.createConfig(app)
-            SenseiConnector.instance.disconnect(app, config)
+            ConfigObject config = SenseidbConnector.instance.createConfig(app)
+            SenseidbConnector.instance.disconnect(app, config)
         },
         NewInstance: { klass, type, instance ->
             def types = app.config.griffon?.sensei?.injectInto ?: ['controller']
             if(!types.contains(type)) return
             def mc = app.artifactManager.findGriffonClass(klass).metaClass
-            SenseiEnhancer.enhance(mc)
+            SenseidbEnhancer.enhance(mc)
         }
     ]
 }

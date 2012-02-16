@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package griffon.plugins.sensei;
+package griffon.plugins.senseidb;
 
 import groovy.lang.Closure;
 import griffon.util.CallableWithArgs;
@@ -21,12 +21,12 @@ import griffon.util.CallableWithArgs;
 /**
  * @author Andres Almiray
  */
-public interface SenseiProvider {
-    Object withSensei(Closure closure);
+public interface SenseidbProvider {
+    Object withSenseidb(Closure closure);
 
-    Object withSensei(String storeName, Closure closure);
+    Object withSenseidb(String storeName, Closure closure);
 
-    <T> T withSensei(CallableWithArgs<T> callable);
+    <T> T withSenseidb(CallableWithArgs<T> callable);
 
-    <T> T withSensei(String storeName, CallableWithArgs<T> callable);
+    <T> T withSenseidb(String storeName, CallableWithArgs<T> callable);
 }

@@ -23,18 +23,18 @@ includeTargets << griffonScript('_GriffonCreateArtifacts')
 argsMap = argsMap ?: [:]
 argsMap['skip-package-prompt'] = true
 
-if(!new File("${basedir}/griffon-app/conf/SenseiConfig.groovy").exists()) {
+if(!new File("${basedir}/griffon-app/conf/SenseidbConfig.groovy").exists()) {
    createArtifact(
-      name:   "SenseiConfig",
+      name:   "SenseidbConfig",
       suffix: "",
-      type:   "SenseiConfig",
+      type:   "SenseidbConfig",
       path:   "griffon-app/conf")
 }
 
-if(!new File("${basedir}/griffon-app/conf/BootstrapSensei.groovy").exists()) {
+if(!new File("${basedir}/griffon-app/conf/BootstrapdbSensei.groovy").exists()) {
    createArtifact(
-      name:   "BootstrapSensei",
+      name:   "BootstrapdbSensei",
       suffix: "",
-      type:   "BootstrapSensei",
+      type:   "BootstrapdbSensei",
       path:   "griffon-app/conf")
 }
