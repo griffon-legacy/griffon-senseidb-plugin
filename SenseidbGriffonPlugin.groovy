@@ -87,7 +87,7 @@ Configuration
 The `withSenseidb()` dynamic method will be added to controllers by default. You can
 change this setting by adding a configuration flag in `griffon-app/conf/Config.groovy`
 
-    griffon.sensei.injectInto = ['controller', 'service']
+    griffon.senseidb.injectInto = ['controller', 'service']
 
 ### Events
 

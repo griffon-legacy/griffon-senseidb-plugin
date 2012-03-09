@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import griffon.core.GriffonClass
 import griffon.core.GriffonApplication
 import griffon.plugins.senseidb.SenseidbConnector
 import griffon.plugins.senseidb.SenseidbEnhancer
@@ -27,16 +28,12 @@ class SenseidbGriffonAddon {
         SenseidbConnector.instance.connect(app, config)
     }
 
-    def events = [
-        ShutdownStart: { app ->
-            ConfigObject config = SenseidbConnector.instance.createConfig(app)
-            SenseidbConnector.instance.disconnect(app, config)
-        },
-        NewInstance: { klass, type, instance ->
-            def types = app.config.griffon?.sensei?.injectInto ?: ['controller']
-            if(!types.contains(type)) return
-            def mc = app.artifactManager.findGriffonClass(klass).metaClass
-            SenseidbEnhancer.enhance(mc)
+    void addonPostInit(GriffonApplication app) {
+        def types = app.config.griffon?.senseidb?.injectInto ?: ['controller']
+        for(String type : types) {
+            for(GriffonClass gc : app.artifactManager.getClassesOfType(type)) {
+                SenseidbEnhancer.enhance(gc.metaClass)
+            }
         }
-    ]
+    }
 }

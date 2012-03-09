@@ -16,14 +16,19 @@
 package griffon.plugins.senseidb
 
 import griffon.util.CallableWithArgs
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * @author Andres Almiray
  */
 final class SenseidbEnhancer {
+    private static final Logger LOG = LoggerFactory.getLogger(SenseidbEnhancer)
+
     private SenseidbEnhancer() {}
     
     static void enhance(MetaClass mc, SenseidbProvider provider = SenseidbStoreHolder.instance) {
+        if(LOG.debugEnabled) LOG.debug("Enhancing $mc with $provider")
         mc.withSenseidb = {Closure closure ->
             provider.withSenseidb('default', closure)
         }
