@@ -19,7 +19,7 @@
  */
 class SenseidbGriffonPlugin {
     // the plugin version
-    String version = '0.1'
+    String version = '0.1.1'
     // the version or versions of Griffon the plugin is designed for
     String griffonVersion = '0.9.5 > *'
     // the other plugins this plugin depends on
@@ -48,7 +48,7 @@ class SenseidbGriffonPlugin {
     ]
     String title = 'Senseidb support'
     String description = '''
-The Sensei plugin enables lightweight access to [Senseidb][1] datastores.
+The Senseidb plugin enables lightweight access to [Senseidb][1] datastores.
 This plugin does NOT provide domain classes nor dynamic finders like GORM does.
 
 Usage
@@ -100,7 +100,7 @@ The following events will be triggered by this addon
 
 ### Multiple Stores
 
-The config file `SenseiConfig.groovy` defines a default datastore block. As the name
+The config file `SenseidbConfig.groovy` defines a default datastore block. As the name
 implies this is the datastore used by default, however you can configure named datastores
 by adding a new config block. For example connecting to a datastore whose name is 'internal'
 can be done in this way
@@ -117,8 +117,8 @@ default datastore block is used.
 Testing
 -------
 The `withSenseidb()` dynamic method will not be automatically injected during unit testing, because addons are simply not initialized
-for this kind of tests. However you can use `SenseiEnhancer.enhance(metaClassInstance, senseiProviderInstance)` where 
-`senseiProviderInstance` is of type `griffon.plugins.sensei.SenseiProvider`. The contract for this interface looks like this
+for this kind of tests. However you can use `SenseidbEnhancer.enhance(metaClassInstance, senseiProviderInstance)` where 
+`senseiProviderInstance` is of type `griffon.plugins.sensei.SenseidbProvider`. The contract for this interface looks like this
 
     public interface SenseidbProvider {
         Object withSenseidb(Closure closure);
@@ -130,7 +130,7 @@ for this kind of tests. However you can use `SenseiEnhancer.enhance(metaClassIns
 It's up to you define how these methods need to be implemented for your tests. For example, here's an implementation that never
 fails regardless of the arguments it receives
 
-    class MySenseiProvider implements SenseidbProvider {
+    class MySenseidbProvider implements SenseidbProvider {
         Object withSenseidb(String storeName = 'default', Closure closure) { null }
         public <T> T withSenseidb(String storeName = 'default', CallableWithArgs<T> callable) { null }       
     }
@@ -140,7 +140,7 @@ This implementation may be used in the following way
     class MyServiceTests extends GriffonUnitTestCase {
         void testSmokeAndMirrors() {
             MyService service = new MyService()
-            SenseidbEnhancer.enhance(service.metaClass, new MySenseiProvider())
+            SenseidbEnhancer.enhance(service.metaClass, new MySenseidbProvider())
             // exercise service methods
         }
     }

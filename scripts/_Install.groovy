@@ -31,10 +31,10 @@ if(!new File("${basedir}/griffon-app/conf/SenseidbConfig.groovy").exists()) {
       path:   "griffon-app/conf")
 }
 
-if(!new File("${basedir}/griffon-app/conf/BootstrapdbSensei.groovy").exists()) {
+if(!new File("${basedir}/griffon-app/conf/BootstrapSenseidb.groovy").exists()) {
    createArtifact(
-      name:   "BootstrapdbSensei",
+      name:   "BootstrapSenseidb",
       suffix: "",
-      type:   "BootstrapdbSensei",
+      type:   "BootstrapSenseidb",
       path:   "griffon-app/conf")
 }
