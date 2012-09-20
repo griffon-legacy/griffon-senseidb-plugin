@@ -15,12 +15,13 @@
  */
 package griffon.plugins.senseidb
 
-import com.senseidb.search.client.json.SenseiServiceProxy
+import com.senseidb.search.client.SenseiServiceProxy
 
 import griffon.core.GriffonApplication
 import griffon.util.Environment
 import griffon.util.Metadata
 import griffon.util.CallableWithArgs
+import griffon.util.ConfigUtils
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -45,8 +46,7 @@ final class SenseidbConnector implements SenseidbProvider {
     // ======================================================
 
     ConfigObject createConfig(GriffonApplication app) {
-        def storeClass = app.class.classLoader.loadClass('SenseidbConfig')
-        new ConfigSlurper(Environment.current.name).parse(storeClass)
+        ConfigUtils.loadConfigWithI18n('SenseidbConfig')
     }
 
     private ConfigObject narrowConfig(ConfigObject config, String storeName) {

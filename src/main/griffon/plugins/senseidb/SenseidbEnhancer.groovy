@@ -26,7 +26,7 @@ final class SenseidbEnhancer {
     private static final Logger LOG = LoggerFactory.getLogger(SenseidbEnhancer)
 
     private SenseidbEnhancer() {}
-    
+
     static void enhance(MetaClass mc, SenseidbProvider provider = SenseidbStoreHolder.instance) {
         if(LOG.debugEnabled) LOG.debug("Enhancing $mc with $provider")
         mc.withSenseidb = {Closure closure ->

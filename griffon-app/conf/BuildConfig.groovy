@@ -9,9 +9,7 @@ griffon.project.dependency.resolution = {
         flatDir name: "${pluginName}LibDir", dirs: ["${basePath}lib"]
     }
     dependencies {
-        compile 'com.senseidb:sensei-java-client:1.0.0',
-                'org.apache.httpcomponents:httpclient:4.1',
-                'org.json:json:20080701'
+        compile 'com.senseidb:sensei-java-client:1.5.0'
     }
 }
 

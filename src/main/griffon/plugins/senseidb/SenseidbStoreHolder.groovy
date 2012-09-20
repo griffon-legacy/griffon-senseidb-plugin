@@ -15,7 +15,7 @@
  */
 package griffon.plugins.senseidb
 
-import com.senseidb.search.client.json.SenseiServiceProxy
+import com.senseidb.search.client.SenseiServiceProxy
 
 import griffon.core.GriffonApplication
 import griffon.util.ApplicationHolder
@@ -80,7 +80,7 @@ class SenseidbStoreHolder implements SenseidbProvider {
             ConfigObject config = SenseidbConnector.instance.createConfig(app)
             store = SenseidbConnector.instance.connect(app, config, storeName)
         }
-        
+
         if(store == null) {
             throw new IllegalArgumentException("No such SenseiServiceProxy configuration for name $storeName")
         }
